@@ -13,6 +13,7 @@
     "ejs": "~2.6.1",
     "express": "^4.16.4",
     "http-errors": "~1.6.3",
+    "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.7",
     "mongoose-sequence": "^5.3.1",
