@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "612204eaa4238c57504804a6"
+  },
+  "cust_fname": "vikash9",
+  "cust_lname": "singh9",
+  "address1": "house no 2796",
+  "createdate": {
+    "$date": "2021-08-22T08:03:53.757Z"
+  },
+  "updatedate": {
+    "$date": "2021-08-22T08:03:53.757Z"
+  },
+  "cust_email": "vksvks09@gmail.com",
+  "password": "$2a$10$QjZiae165wN1c054.XXBnOeBVQc6hVm/Y5l/xvT7HKzHBZrPy.vH6",
+  "address2": "Tara nagar8",
+  "address3": "b.s.city pincode 827017",
+  "phoneno": "8105782959",
+  "cust_id": 5,
+  "__v": 0
+}]

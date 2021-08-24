@@ -1,20 +1,19 @@
 var express = require('express');
 var router = express.Router();
 const Mongoose  = require('mongoose');
+const carrierObj = require('../model/carrierschema');
+const {productObj,orderObj} = require('../model/productschema');
+const warehouseObj = require('../model/warehouseschema');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
 require("dotenv").config(); 
-//require("../config/db.js").connect(); 
-//const express = require("express"); 
+
 const auth = require("../middleware/auth"); 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-//const app = express(); 
-//app.use(express.json()); 
-// Logic goes here 
 // importing user context 
 const User = require("../model/customer"); 
  
@@ -103,8 +102,75 @@ router.post("/login", async (req, res) => {
     router.post("/welcome", auth, (req, res) => {
       res.status(200).send("Welcome ?? ");
     });
-    
-
+    /**
+   * Warehouse Master data creation 
+   */
+   router.post('/saveWarehouse', function (req, res, next) {
+    const warehouseData = new warehouseObj({"_id":new Mongoose.Types.ObjectId(),"name": "Whitefield","inchargename":"vikash", "phoneno": "8908908907","address1":"bokaro","address2":"bokaro"});
+    warehouseData.save((err, data) => {
+       if (err) {
+         console.log("error" + err);
+       } else {
+   
+        // res.send(data);
+       }
+     })
+     res.send("data save sucessfully");
+   });
+  /**
+   * Carrier Master data creation 
+   */
+   router.post('/saveCarrier', function (req, res, next) {
+    const carrierData = new carrierObj({"_id":new Mongoose.Types.ObjectId(),"carrier_name": "blue-dart","description":"courier services", "phoneno": "8908908907","address":"bokaro"});
+    carrierData.save((err, data) => {
+       if (err) {
+         console.log("error" + err);
+       } else {
+   
+        // res.send(data);
+       }
+     })
+     res.send("data save sucessfully");
+   });
+/**
+   * Product Master data creation 
+   */
+ router.post('/saveProduct', function (req, res, next) {
+  const productData = new productObj({"_id":new Mongoose.Types.ObjectId(),"name": "Liril-soap","description":"bath soap1", "phoneno": "8080808080","address":"bihar","availableqty":"50"});
+  productData.save((err, data) => {
+     if (err) {
+       console.log("error" + err);
+     } else {
+ 
+      // res.send(data);
+     }
+   })
+   res.send("data save sucessfully");
+ });
+ /**
+   * Order Master data creation plus product refernece
+   */
+  router.post('/saveOrder', function (req, res, next) {
+    const productData = new productObj({"_id":new Mongoose.Types.ObjectId(),"name": "test","description":"test", "phoneno": "7676567","address":"test","availableqty":"9"});
+    const orderData = new orderObj({"idref": productData._id,"orderprice": "231.2", "orderqty": "2"});
+    productData.save((err, data) => {
+       if (err) {
+         console.log("error" + err);
+       } else {
+   
+        // res.send(data);
+       }
+     })
+     orderData.save((err, data) => {
+       if (err) {
+         console.log("error" + err);
+       } else {
+         
+        // res.send(data);
+       }
+     })
+     res.send("data save sucessfully");
+   });
 //module.exports = app; 
 module.exports = router;
 

@@ -1,0 +1,11 @@
+[{
+  "_id": {
+    "$oid": "612522f35148693360d5e1b2"
+  },
+  "carrier_name": "blue-dart",
+  "address": "bokaro",
+  "description": "courier services",
+  "phoneno": "8908908907",
+  "carrier_id": 1,
+  "__v": 0
+}]

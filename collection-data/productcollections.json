@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "612525fcebb339237cd1ed48"
+  },
+  "name": "lux-soap",
+  "address": "bangalore",
+  "expdate": {
+    "$date": "2021-08-24T17:00:43.556Z"
+  },
+  "mandate": {
+    "$date": "2021-08-24T17:00:43.556Z"
+  },
+  "createdate": {
+    "$date": "2021-08-24T17:00:43.556Z"
+  },
+  "updatedate": {
+    "$date": "2021-08-24T17:00:43.556Z"
+  },
+  "description": "bath soap",
+  "phoneno": "12651781872",
+  "availableqty": "5",
+  "product_id": 1,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "612526bb6ad17311dcf27a08"
+  },
+  "name": "Liril-soap",
+  "address": "bihar",
+  "expdate": {
+    "$date": "2021-08-24T17:04:58.818Z"
+  },
+  "mandate": {
+    "$date": "2021-08-24T17:04:58.821Z"
+  },
+  "createdate": {
+    "$date": "2021-08-24T17:04:58.818Z"
+  },
+  "updatedate": {
+    "$date": "2021-08-24T17:04:58.818Z"
+  },
+  "description": "bath soap1",
+  "phoneno": "8080808080",
+  "availableqty": "50",
+  "product_id": 5,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61252d25b034ff39381ccc29"
+  },
+  "name": "test",
+  "address": "test",
+  "expdate": {
+    "$date": "2021-08-24T17:31:46.877Z"
+  },
+  "mandate": {
+    "$date": "2021-08-24T17:31:46.880Z"
+  },
+  "createdate": {
+    "$date": "2021-08-24T17:31:46.877Z"
+  },
+  "updatedate": {
+    "$date": "2021-08-24T17:31:46.877Z"
+  },
+  "description": "test",
+  "phoneno": "7676567",
+  "availableqty": "9",
+  "product_id": 6,
+  "__v": 0
+}]
