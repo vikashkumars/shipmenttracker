@@ -5,9 +5,9 @@ const productschema = new mongoose.Schema({
   _id: schema.Types.ObjectId,
   name: { type: String, default: null }, 
   address: { type: String, default: null }, 
-  phoneno: { type: String, unique: true },
-  description: { type: String, unique: true },
-  availableqty: { type: String, unique: true },
+  phoneno: { type: String, default: null },
+  description: { type: String, default: null },
+  availableqty: { type: String, default: null },
   expdate: {
     type: schema.Types.Date,
     default: Date.now()

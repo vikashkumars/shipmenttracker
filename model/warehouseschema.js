@@ -7,7 +7,7 @@ const warehousechema = new mongoose.Schema({
   inchargename: { type: String, default: null }, 
   address1: { type: String, default: null }, 
   address2: { type: String, default: null }, 
-  phoneno: { type: String, unique: true }
+  phoneno: { type: String, default: null }
   
 }); 
 warehousechema.plugin(

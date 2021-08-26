@@ -105,7 +105,7 @@ router.post("/login", async (req, res) => {
     /**
    * Warehouse Master data creation 
    */
-   router.post('/saveWarehouse', function (req, res, next) {
+   router.post('/saveWarehouse',auth, function (req, res, next) {
     const warehouseData = new warehouseObj({"_id":new Mongoose.Types.ObjectId(),"name": "Whitefield","inchargename":"vikash", "phoneno": "8908908907","address1":"bokaro","address2":"bokaro"});
     warehouseData.save((err, data) => {
        if (err) {
