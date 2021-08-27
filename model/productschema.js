@@ -56,6 +56,6 @@ orderschema.plugin(
   autoIncrement, {
    inc_field: "order_id"
 })
-const orderObj = module.exports = mongoose.model("ordercollections", orderschema); 
-const productObj = module.exports = mongoose.model("productcollections", productschema); 
+const orderObj =  mongoose.model("ordercollections", orderschema); 
+const productObj  = mongoose.model("productcollections", productschema); 
 module.exports = {orderObj,productObj};

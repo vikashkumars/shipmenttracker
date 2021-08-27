@@ -14,5 +14,5 @@ warehousechema.plugin(
   autoIncrement, {
    inc_field: "warehouse_id"
 })
-const warehouseObj = module.exports = mongoose.model("warehousecollections", warehousechema); 
+const warehouseObj =  mongoose.model("warehousecollections", warehousechema); 
 module.exports = warehouseObj;

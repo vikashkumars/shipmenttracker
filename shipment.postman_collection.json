@@ -1,0 +1,191 @@
+{
+	"variables": [],
+	"info": {
+		"name": "shipment",
+		"_postman_id": "427b8796-7c44-2723-0e2d-ef07b29112d4",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "master-savecarrier",
+			"request": {
+				"url": "localhost:8091/saveCarrier",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYyOTg3NDUwNCwiZXhwIjoxNjI5ODgxNzA0fQ.SwbXRHnKggo4-BM5SdqsX53myc0Nqam5NhbXj4UtPn0",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "master-saveproduct",
+			"request": {
+				"url": "localhost:8091/saveProduct",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYyOTg3NDUwNCwiZXhwIjoxNjI5ODgxNzA0fQ.SwbXRHnKggo4-BM5SdqsX53myc0Nqam5NhbXj4UtPn0",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "master-savewarehouse",
+			"request": {
+				"url": "localhost:8091/saveWarehouse",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYyOTg3NDUwNCwiZXhwIjoxNjI5ODgxNzA0fQ.SwbXRHnKggo4-BM5SdqsX53myc0Nqam5NhbXj4UtPn0",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "master-saveorder",
+			"request": {
+				"url": "localhost:8091/saveOrder",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYyOTg3NDUwNCwiZXhwIjoxNjI5ODgxNzA0fQ.SwbXRHnKggo4-BM5SdqsX53myc0Nqam5NhbXj4UtPn0",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "API-1-Shipmentstatus",
+			"request": {
+				"url": {
+					"raw": "localhost:8091/addshipmentstatus?orderId=6127b87b1fe2146be8a64168&customerId=6127b87b1fe2146be8a64168&carrierID=6127b87b1fe2146be8a64168&warehouseId=6127b87b1fe2146be8a64168",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"addshipmentstatus"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "customerId",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "carrierID",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "warehouseId",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYzMDAzMTk4MSwiZXhwIjoxNjMwMDM5MTgxfQ.UEYCS9bbTm-ZXMtB44wP2y0YG7AOyvFS-LVWYI7Nc4M",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "API-3-Updateshipmentstatus",
+			"request": {
+				"url": {
+					"raw": "localhost:8091/updateshipmentstatus?orderId=6127b87b1fe2146be8a64168&customerId=6127b87b1fe2146be8a64168&carrierID=6127b87b1fe2146be8a64168&shipmentid=6127b87b1fe2146be8a64168&statusType=\"pickedup\"",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"updateshipmentstatus"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "customerId",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "carrierID",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "shipmentid",
+							"value": "6127b87b1fe2146be8a64168",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "statusType",
+							"value": "\"pickedup\"",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjEyNWU5M2ZmMTBiMTg1ZDM4YzlmOTJkIiwiY3VzdF9lbWFpbCI6InZrc3ZrczA5QGdtYWlsLmNvbSIsImlhdCI6MTYzMDAzMTk4MSwiZXhwIjoxNjMwMDM5MTgxfQ.UEYCS9bbTm-ZXMtB44wP2y0YG7AOyvFS-LVWYI7Nc4M",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

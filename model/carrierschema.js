@@ -13,5 +13,5 @@ carrierschema.plugin(
   autoIncrement, {
    inc_field: "carrier_id"
 })
-const carrierObj = module.exports = mongoose.model("carrierscollections", carrierschema); 
+const carrierObj = mongoose.model("carrierscollections", carrierschema); 
 module.exports = carrierObj;
