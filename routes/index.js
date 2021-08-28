@@ -5,20 +5,18 @@ const carrierObj = require('../model/carrierschema');
 const { productObj, orderObj } = require('../model/productschema');
 const { shipmentObj, deliveryObj } = require('../model/shipmentschema');
 const warehouseObj = require('../model/warehouseschema');
+const sendMail = require("../model/shipmailer");
 const url = require('url');
+const auth = require("../middleware/auth");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+// importing user context 
+const User = require("../model/customer");
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
-require("dotenv").config();
-
-const auth = require("../middleware/auth");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-// importing user context 
-const User = require("../model/customer");
-
 // Register 
 router.post("/register", async (req, res) => {
 
@@ -62,9 +60,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
-
-
 // Login 
 router.post("/login", async (req, res) => {
 
@@ -102,7 +97,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 router.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome ?? ");
 });
@@ -114,31 +108,22 @@ router.post("/welcome", auth, (req, res) => {
  * Todo's API2 implementation ?
  */
 
-router.post('/addshipmentstatus', auth, function (req, res) {
+router.post('/addshipmentstatus', auth, async function (req, res) {
   //shipmentObj, deliveryObj
   const query = url.parse(req.url, true);
   var qdata = query.query;
   const deliveryData = new deliveryObj({ "_id": new Mongoose.Types.ObjectId(), "idrefcarrier": qdata.carrierID, "idreforder": qdata.orderId, "idrefwarehouse": qdata.warehouseId, "reasonofdelay": { "desc": "ready", "date": "2021-10-21" }, "expectedDeliveryDate": new Date() });
   const shipmentData = new shipmentObj({ "_id": new Mongoose.Types.ObjectId(), "idrefcustomer": qdata.customerId, "idreforder": qdata.orderId, "idrefdelivery": deliveryData._id, "status": [{ "type": "procession", "date": "2021-10-21" }], "deliveryotp": "11231" });
-  deliveryData.save((err, data) => {
-    if (err) {
-      console.log("error" + err);
-    } else {
-      // res.send(data);
-    }
-  })
-  shipmentData.save((err, data) => {
-    if (err) {
-      console.log("error" + err);
-    } else {
-      // res.send(data);
-    }
-  })
 
+  let dlvRes = await deliveryData.save();
+  let shpRes = await shipmentData.save();
+  console.log("dlvRes " + dlvRes + "shpRes " + shpRes);
   /*
   Expected ouput
   shipmentId,carrierID, expectedDeliveryDate and orderId
   */
+  await sendMail();
+
   var result = { "shipmentId": shipmentData._id, "carrierID": deliveryData.idrefcarrier, "expectedDeliveryDate": deliveryData.expectedDeliveryDate, "orderId": shipmentData.idreforder };
   res.send(result);
 });
@@ -147,18 +132,53 @@ router.post('/addshipmentstatus', auth, function (req, res) {
  * Input:orderId, customerId, carrierID, ShipmentID, statusType
  * Output:successfully updated.
  */
- router.put('/updateshipmentstatus', auth, function (req, res) {
+router.put('/updateshipmentstatus', auth, function (req, res) {
   const query = url.parse(req.url, true);
   var qdata = query.query;
-  console.log(" idreforder "+qdata.orderId +" idrefcustomer "+qdata.customerId);
-  shipmentObj.findOne({"idreforder":qdata.orderId,"idrefcustomer":qdata.customerId}).populate("idreforder","idrefcustomer").exec(function (err, data) { 
-    if (err) return handleError(err); 
-    //console.log('The author is %s', data._id); 
-    res.send(data);
-    console.log("shipment data  "+ data);
-    // prints "The author is Ian Fleming" 
-  }); 
- });
+  console.log(" idreforder " + qdata.orderId + " idrefcustomer " + qdata.customerId);
+
+  shipmentObj.find({ "idrefcustomer": qdata.customerId }).exec(function (err, data) {
+    var obj = JSON.stringify(data);
+    var parseObj = JSON.parse(obj);
+
+    console.log('The author is %s', parseObj[0].status.length);
+    var statusArr = [];
+    var statusprepartion;
+    var tryone = [];
+    parseObj.forEach((val, i) => {
+      //statusArr.push(val.status.toString());
+      tryone = val.status;
+    });
+    statusprepartion = { type: qdata.statusType, date: new Date() };
+    tryone.push(statusprepartion);
+    console.log("statusprepartion  ====    " + JSON.stringify(tryone));
+
+
+    if (err) return handleError(err);
+
+    // res.send(data);
+    //Prepare status object
+    //console.log("print   "+data);
+    /**
+     * Update the status whenever status is getting changed.
+     */
+    //  statusArr.forEach((statusVal, i) => {
+    //   statusprepartion = "{type:"+statusVal.type+",date:"+statusVal.date
+    // });
+    // statusprepartion = statusprepartion + "type:"+qdata.statusType+",date:"+ new Date()+"}"
+
+
+    shipmentObj.findOneAndUpdate({ "idreforder": qdata.orderId, "idrefcustomer": qdata.customerId }, { "status": tryone }, (err, data) => {
+
+      if (err) {
+        console.log("error" + err);
+      } else {
+        res.send(data);
+      }
+    })
+  });
+
+});
 
 /**
 * Warehouse Master data creation 

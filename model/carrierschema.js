@@ -1,4 +1,6 @@
 const mongoose = require("mongoose"); 
+mongoose.pluralize(null);// s coolection issues 
+
 const schema = mongoose.Schema;
 const autoIncrement = require('mongoose-sequence')(mongoose);
 const carrierschema = new mongoose.Schema({ 
@@ -14,4 +16,5 @@ carrierschema.plugin(
    inc_field: "carrier_id"
 })
 const carrierObj = mongoose.model("carrierscollections", carrierschema); 
+//var dataSchema = new Schema(carrierschema, { collection: 'data' })
 module.exports = carrierObj;
