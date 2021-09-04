@@ -5,12 +5,13 @@ const carrierObj = require('../model/carrierschema');
 const { productObj, orderObj } = require('../model/productschema');
 const { shipmentObj, deliveryObj } = require('../model/shipmentschema');
 const warehouseObj = require('../model/warehouseschema');
-const sendMail = require("../model/shipmailer");
+const mailer = require("../model/shipmailer");
 const url = require('url');
 const auth = require("../middleware/auth");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+var logger = require('../middleware/logger');
 // importing user context 
 const User = require("../model/customer");
 /* GET home page. */
@@ -26,10 +27,12 @@ router.post("/register", async (req, res) => {
     // Validate user input 
     if (!(cust_email && password && cust_fname && cust_lname)) {
       res.status(400).send("All input is required");
+      logger.logger.error("All input is required to register");
     }
     // check if user already exist 
     const oldUser = await User.findOne({ cust_email });
     if (oldUser) {
+      logger.logger.info("User Already Exist. Please Login");
       return res.status(409).send("User Already Exist. Please Login");
     }
     //Encrypt user password 
@@ -57,6 +60,7 @@ router.post("/register", async (req, res) => {
     user.token = token; res.status(201).json(user);
   } catch (err) {
     console.log(err);
+    logger.logger.error("Error-->" + err);
   }
 });
 
@@ -71,6 +75,7 @@ router.post("/login", async (req, res) => {
     // Validate user input 
     if (!(cust_email && password)) {
       res.status(400).send("All input is required");
+      logger.logger.info("All input is required");
     }
     // Validate if user exist in our database 
     const user = await User.findOne({ cust_email });
@@ -90,15 +95,19 @@ router.post("/login", async (req, res) => {
 
       // user 
       res.status(200).json(user);
+      logger.logger.info("User:" + user);
     }
     res.status(400).send("Invalid Credentials");
+    logger.logger.error("Invalid Credentials");
   } catch (err) {
     console.log(err);
+    logger.logger.error("Error-->" + err);
   }
 });
 
 router.post("/welcome", auth, (req, res) => {
   res.status(200).send("Welcome ?? ");
+  logger.logger.info("Welcome ??");
 });
 /**
  * API1 creation for shipment tracking 
@@ -113,17 +122,37 @@ router.post('/addshipmentstatus', auth, async function (req, res) {
   const query = url.parse(req.url, true);
   var qdata = query.query;
   const deliveryData = new deliveryObj({ "_id": new Mongoose.Types.ObjectId(), "idrefcarrier": qdata.carrierID, "idreforder": qdata.orderId, "idrefwarehouse": qdata.warehouseId, "reasonofdelay": { "desc": "ready", "date": "2021-10-21" }, "expectedDeliveryDate": new Date() });
-  const shipmentData = new shipmentObj({ "_id": new Mongoose.Types.ObjectId(), "idrefcustomer": qdata.customerId, "idreforder": qdata.orderId, "idrefdelivery": deliveryData._id, "status": [{ "type": "procession", "date": "2021-10-21" }], "deliveryotp": "11231" });
+  const shipmentData = new shipmentObj({ "_id": new Mongoose.Types.ObjectId(), "idrefcustomer": qdata.customerId, "idreforder": qdata.orderId, "idrefdelivery": deliveryData._id, "status": [{ "type": "processing", "date": "2021-10-21" }], "deliveryotp": "11231" });
 
   let dlvRes = await deliveryData.save();
   let shpRes = await shipmentData.save();
-  console.log("dlvRes " + dlvRes + "shpRes " + shpRes);
+  // console.log("dlvRes " + dlvRes + "shpRes " + shpRes);
+  logger.logger.info("dlvRes: " + dlvRes);
+  logger.logger.info("ShpRes: " + shpRes);
+  //const oldUser = await User.findOne({ qdata.customerId });
   /*
   Expected ouput
   shipmentId,carrierID, expectedDeliveryDate and orderId
   */
-  await sendMail();
+  // const oldUser = await User.findOne({ "cust_email":"vksvks09@gmail.com"});
+  // console.log("old user "+oldUser);
+  // console.log("qdata.customerId ---->" + qdata.customerId );
+  User.find({ "_id": qdata.customerId }).exec(async function (err, data) {
+    try {
 
+      var obj = JSON.stringify(data);
+      var parseObj = JSON.parse(obj);
+      console.log("query data:::" + parseObj);
+      var email = parseObj.map(email => email.cust_email);
+      //console.log("email in addshipment: " +email) 
+      await mailer.sendStatusMail(email, "Processing");
+    } catch (err) {
+      console.log("err   " + err);
+    }
+
+
+  });
+  logger.logger.info(result);
   var result = { "shipmentId": shipmentData._id, "carrierID": deliveryData.idrefcarrier, "expectedDeliveryDate": deliveryData.expectedDeliveryDate, "orderId": shipmentData.idreforder };
   res.send(result);
 });
@@ -132,52 +161,108 @@ router.post('/addshipmentstatus', auth, async function (req, res) {
  * Input:orderId, customerId, carrierID, ShipmentID, statusType
  * Output:successfully updated.
  */
-router.put('/updateshipmentstatus', auth, function (req, res) {
-  const query = url.parse(req.url, true);
-  var qdata = query.query;
-  console.log(" idreforder " + qdata.orderId + " idrefcustomer " + qdata.customerId);
+function addDays(date, days) {
+  //alert("called");
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
 
-  shipmentObj.find({ "idrefcustomer": qdata.customerId }).exec(function (err, data) {
+router.put('/updateshipmentstatus', auth, function (req, res) {
+  // const query = url.parse(req.url, true);
+  // var qdata = query.query;
+  const { orderId, customerId, carrierID, shipmentid, statusType } = req.body;
+  // console.log(" idreforder " + qdata.orderId + " idrefcustomer " + qdata.customerId);
+  logger.logger.info(" idreforder " + orderId + " idrefcustomer " + customerId);
+
+  shipmentObj.find({ "idrefcustomer": customerId }).exec(function (err, data) {
     var obj = JSON.stringify(data);
     var parseObj = JSON.parse(obj);
 
-    console.log('The author is %s', parseObj[0].status.length);
+    //console.log('The author is %s', parseObj[0].status.length);
+    logger.logger.info("The author is", +parseObj[0].status.length);
     var statusArr = [];
-    var statusprepartion;
-    var tryone = [];
+    var newstatusprepartion;
+
     parseObj.forEach((val, i) => {
       //statusArr.push(val.status.toString());
-      tryone = val.status;
+      statusArr = val.status;
     });
-    statusprepartion = { type: qdata.statusType, date: new Date() };
-    tryone.push(statusprepartion);
-    console.log("statusprepartion  ====    " + JSON.stringify(tryone));
+    newstatusprepartion = { type: statusType, date: new Date() };
+    statusArr.push(newstatusprepartion);
+    logger.logger.info("Newstatusprepartion on each steps of delivery ====    " + JSON.stringify(statusArr));
+    if (err) {
+      logger.logger.error(err);
+      return handleError(err)
+    };
 
-
-    if (err) return handleError(err);
-
-    // res.send(data);
-    //Prepare status object
-    //console.log("print   "+data);
-    /**
-     * Update the status whenever status is getting changed.
-     */
-    //  statusArr.forEach((statusVal, i) => {
-    //   statusprepartion = "{type:"+statusVal.type+",date:"+statusVal.date
-    // });
-    // statusprepartion = statusprepartion + "type:"+qdata.statusType+",date:"+ new Date()+"}"
-
-
-    shipmentObj.findOneAndUpdate({ "idreforder": qdata.orderId, "idrefcustomer": qdata.customerId }, { "status": tryone }, (err, data) => {
-
+    shipmentObj.findOneAndUpdate({ "idrefcustomer": customerId }, { "status": statusArr }, (err, data) => {
       if (err) {
         console.log("error" + err);
+        logger.logger.error("error" + err);
       } else {
+        logger.logger.info("data-->" + data);
+        //lead delay operation 
+        if (statusType === "delayed") {
+          var orderCreatedDate = parseObj.map(createdDate => createdDate.createdate);
+          var expectedDelveryDate = addDays(new Date(orderCreatedDate), 3);
+
+          console.log(expectedDelveryDate + " -- " + orderCreatedDate);
+          if (expectedDelveryDate.getTime() > new Date().getTime()) {
+            deliveryObj.findOneAndUpdate({ "idrefcarrier": "61339e8692e4346ff8ac53b5" }, { "reasonofdelay": { "desc": "Due to heavy rain", "date": new Date() } }, (err, data) => {
+              if (err) {
+                console.log("error" + err);
+                logger.logger.error("error" + err);
+              } else {
+                logger.logger.info("data-->" + data);
+              }
+            });
+          }
+        }
         res.send(data);
       }
     })
+
+    User.find({ "_id": customerId }).exec(async function (err, data) {
+      var obj = JSON.stringify(data);
+      var parseObj = JSON.parse(obj);
+      console.log("query data:::" + parseObj);
+      var email = parseObj.map(email => email.cust_email);
+      if (statusType === "out for delivery") {
+        await mailer.sendOTPMail(email);
+      } else {
+        await mailer.sendStatusMail(email, statusType);
+      }
+    });
   });
 
+});
+/**
+ * API4: get Shipment status  
+ * Input:orderId
+ * Output:status.
+ */
+router.get('/getshipmentstatus', function (req, res) {
+  const query = url.parse(req.url, true);
+  var qdata = query.query;
+  console.log(" idreforder " + qdata.orderId);
+  logger.logger.info(" idreforder " + qdata.orderId);
+
+  shipmentObj.find({ "idreforder": qdata.orderId }).exec(function (err, data) {
+    var obj = JSON.stringify(data);
+    var parseObj = JSON.parse(obj);
+    console.log("query data:::" + parseObj);
+    var statusArr = parseObj.map(ship => ship.status);
+    if (err) {
+      console.log(err);
+      logger.logger.error('Error-->' + err);
+    }
+    else {
+      console.log("status array" + JSON.stringify(statusArr));
+      logger.logger.info("shipment get status-->" + JSON.stringify(statusArr))
+      res.send(JSON.stringify(statusArr));
+    }
+  })
 });
 
 /**

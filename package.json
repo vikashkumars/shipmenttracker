@@ -19,6 +19,7 @@
     "mongoose-sequence": "^5.3.1",
     "morgan": "~1.9.1",
     "nodemailer": "^6.6.3",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "winston": "^3.3.3"
   }
 }
